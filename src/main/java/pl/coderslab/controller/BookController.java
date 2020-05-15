@@ -4,36 +4,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.model.Book;
+import pl.coderslab.service.MemoryBookService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/books")
 public class BookController {
-//    private BookService bookService;
-//    @Autowired
-//    public BookController(BookService bookService) {
-//        this.bookService = bookService;
+    private MemoryBookService memoryBookService;
+
+    @Autowired
+    public BookController(MemoryBookService memoryBookService) {
+        this.memoryBookService = memoryBookService;
+    }
+
+
+    @GetMapping("")
+    public List<Book> getAllBooks() {
+        return memoryBookService.getList();
+    }
+
+//    @GetMapping("")
+//    public Book viewsBooks(@RequestBody Book book) {
+//        return null;
 //    }
-    @GetMapping("/books")
-    public List<Book> getAllBooks(){
-        List<Book> bookList = new ArrayList<>();
-        return bookList;
+
+    @GetMapping("{id}")
+    public Book showBook(@PathVariable long id) {
+        return memoryBookService.getBook(id);
     }
-    @PostMapping("/books")
-    public Book addBook(@RequestBody Book book){
-        return null;
+
+    @PostMapping("{id}")
+    public String addBook(@RequestBody Book book) {
+        memoryBookService.addBook(book);
+        return"added";
     }
-    @GetMapping("/books/{id}")
-    public Book getBook(@PathVariable int id){
-        return null;
+
+    @DeleteMapping("{id}")
+    public String deleteBook(@PathVariable long id) {
+        memoryBookService.deleteBook(id);
+        return "deleted";
     }
-    @PutMapping("/books/{id}")
-    public Book updateBook(@RequestBody Book book, @PathVariable int id){
-        return null;
-    }
-    @DeleteMapping("/books/{id}")
-    public Book deleteBook(@PathVariable int id){
-        return null;
+
+    @PutMapping("{id}")
+    public String updateBook(@RequestBody Book book, @PathVariable long id){
+        book.setId(id);
+        memoryBookService.updateBook(book);
+        return "updated";
     }
 }
